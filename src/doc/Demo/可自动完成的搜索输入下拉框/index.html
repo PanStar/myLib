@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html >
+<head>
+	<meta charset="utf-8">
+	<title>搜索输入下拉框</title>
+	<script language="javascript" type="text/javascript" src="../Js/jquery/jquery-2.1.4.min.js"></script>
+	<script language="javascript" type="text/javascript" src="../Js/bootstrap/js/bootstrap.min.js"></script>
+	<script language="javascript" type="text/javascript" src="../Js/jquery-ui/jquery-ui.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../Js/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../Js/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../Js/jquery-ui/jquery-ui.css" />
+	
+	<style type="text/css">
+	select {
+		padding: 4px;
+		border: 1px solid #dddddd;
+		height: 34px;
+		border-radius: 2px;
+	}
+	.ui-autocomplete-input { 
+		height: 34px; 
+		border: 1px solid #dddddd;
+		position: absolute;
+		left: 0;
+		bottom: 0px;
+		z-index: 3;
+		width: 200px;
+	}
+	</style>
+	<script type="text/javascript">
+	function initCombox(){
+		var html = "<option value='京福高铁黄山段'>京福高铁黄山段</option>"+
+					"<option value='合武高铁合肥段'>合武高铁合肥段</option>"+
+					"<option value='合蚌高铁合肥段'>合蚌高铁合肥段</option>"+
+					"<option value='合宁高铁滁州段'>合宁高铁滁州段</option>"+
+					"<option value='京沪高铁宿州段'>京沪高铁宿州段</option>"+
+					"<option value='合武高铁六安段'>合武高铁六安段</option>";
+
+		$("#coverArea").html(html);
+		$("#coverArea2").html(html);
+	}
+	function searchBox(){
+		(function($) {
+			$.widget( "ui.combobox", {
+				_create: function() {
+					var self = this,
+						select = this.element.hide(),
+						selected = select.children( ":selected" ),
+						value = selected.val() ? selected.text() : "";
+					var input = this.input = $( "<input>" )
+						.insertAfter( select )
+						.val( value )
+						.autocomplete({
+							delay: 0,
+							minLength: 0,
+							source: function( request, response ) {
+								var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+								response( select.children( "option" ).map(function() {
+									var text = $( this ).text();
+									if ( this.value && ( !request.term || matcher.test(text) ) )
+										return {
+											label: text.replace(
+												new RegExp(
+													"(?![^&;]+;)(?!<[^<>]*)(" +
+													$.ui.autocomplete.escapeRegex(request.term) +
+													")(?![^<>]*>)(?![^&;]+;)", "gi"
+												), "<strong>$1</strong>" ),
+											value: text,
+											option: this
+										};
+								}) );
+							},
+							select: function( event, ui ) {
+								ui.item.option.selected = true;
+								self._trigger( "selected", $("#coverArea2").val(ui.item.value), {
+									item: ui.item.option
+								});
+							},
+							change: function( event, ui ) {
+								if ( !ui.item ) {
+									var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( $(this).val() ) + "$", "i" ),
+										valid = false;
+									select.children( "option" ).each(function() {
+										if ( $( this ).text().match( matcher ) ) {
+											this.selected = valid = true;
+											return false;
+										}
+									});
+									if ( !valid ) {
+										// remove invalid value, as it didn't match anything
+										$( this ).val( "" );
+										select.val( "" );
+										input.data( "ui-autocomplete" ).term = "";
+										return false;
+									}
+								}
+							}
+						})
+						.addClass( "ui-widget ui-widget-content ui-corner-left" );
+
+					input.data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+						return $( "<li></li>" )
+							.data( "ui-autocomplete-item", item )
+							.append( "<a>" + item.label + "</a>" )
+							.appendTo( ul );
+					};
+				},
+
+				destroy: function() {
+					this.input.remove();
+					this.button.remove();
+					this.element.show();
+					$.Widget.prototype.destroy.call( this );
+				}
+			});
+		})( jQuery );
+		$("#coverArea").combobox();
+	}
+
+	$(document).ready(function(){
+		initCombox();
+		searchBox();
+		$('#coverArea2').on("change",function(){
+			$("input").val($("#coverArea2").val());
+		});
+	});
+</script>
+</head>
+<body>
+	<div class="ui-widget" style="position: relative;z-index: 2;height: 40px;width: 240px;">
+		<select id="coverArea" class="SelectStyle" style="position:absolute;left:0px;bottom:0px;"></select>
+		<select id="coverArea2" class="SelectStyle" style="position:absolute;z-index: 2;left:0px;bottom:0px;width:220px;"></select>
+	</div>
+</body>
+</html>

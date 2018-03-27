@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<HTML>
+<HEAD>
+<TITLE> Index </TITLE>
+<meta charset="utf-8" />
+<link type="text/css" href="style/css/common.css" rel="stylesheet">
+<link type="text/css" href="style/css/index.css" rel="stylesheet">
+<script language="javascript" type="text/javascript" src="js/classie.js"></script>
+<script language="javascript" type="text/javascript" src="js/index.js"></script>
+<script language="javascript" type="text/javascript" src="js/filedata.js"></script>
+<script language="javascript" type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript">
+window.onerror=function(errorMessage,scriptURI,lineNumber,columnNumber,error)
+{
+	var txt="There was an error on this page.\n\n";
+	txt+="Error: " + errorMessage + "\n";
+	txt+="URL: " + scriptURI + "\n";
+	txt+="Line: " + lineNumber + "\n\n";
+	txt+="Click OK to continue.\n\n";
+	//alert(txt);
+	console.log(txt);
+	return true;
+}
+jQuery(document).ready(function(){
+	if( window.FILEDATA === undefined){
+		FILEDATA = {'Note':{'eastcom':{'note':'eastcom'},'CSS':'Note/CSS.js'},'Demo':{'MapABC_拾取坐标':'Demo/MapABC_拾取坐标.html','MapABCDEMO':'Demo/MapABCDEMO.html','表格奇偶行变色':'Demo/表格奇偶行变色.html','表格多行多列':'Demo/表格多行多列.html','检测浏览器版本':'Demo/检测浏览器版本.html','渐渐消失':'Demo/渐渐消失.html','拉框查询':'Demo/拉框查询.html','MapABC_自定义弹出框':'Demo/MapABC_自定义弹出框/index.html','侧边栏切换效果':'Demo/侧边栏切换效果/index.html','侧边栏展开-手风琴效果':'Demo/侧边栏展开-手风琴效果/index.html','可自动完成的搜索输入下拉框':'Demo/可自动完成的搜索输入下拉框/index.html','CSS3发光呼吸字':'Demo/CSS3发光呼吸字.html'},'Blog(Marker)':{'muou':{'杭州到仙居 汽车票':'http://www.changtu.com/chepiao/hangzhoushi-xianjuxian.html?day=1&endId=A-690409'},'Coder':{'html字符串转义':'http://blog.csdn.net/wusuopubupt/article/details/8817826'},'API':{'jQuery 中文API':'http://www.jquery123.com/'},'书签':'Marks/bookmarks_16_6_17.html'}};
+	}else{
+		FILEDATA = formatData(FILEDATA);
+	}
+	console.log(FILEDATA)
+	init(FILEDATA);
+});
+</script>
+</HEAD>
+<BODY>
+<div class="div_body">
+	<div class="st-container">
+		<div class="index" id="index">
+			<div class="node" id="Root-1">
+				<div class="node-title" >
+					<input type="checkbox">
+					<label>Root</label>
+				</div>
+				<div class="node" id="Note-3">
+					<div class="node-title">
+						<input type="checkbox">
+						<label>Note</label>
+					</div>
+					<div class="node" >112</div>
+					<div class="node">112</div>
+				</div>
+				<div class="node">111</div>
+				<div class="node">111</div>
+			</div>
+		</div>
+	</div>
+	<div class="st-content clear">
+		<iframe class="content" src='blank.html'></iframe>
+	</div>
+	<div id="template" class="hide">
+		<table id="tbStu" cellpadding="0" cellspacing="0">
+			<tbody>
+				<tr>
+					<th>学号</th><th>姓名</th><th>性别</th><th>总分</th>
+				</tr>
+				<tr>
+					<td>1001</td><td>张小明</td><td>男</td><td>320</td>
+				</tr>
+				<tr>
+					<td>1002</td><td>李明旗</td><td>女</td><td>350</td>
+				</tr>
+				<tr>
+					<td>1003</td><td>王小明</td><td>男</td><td>320</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</BODY>
+</HTML>

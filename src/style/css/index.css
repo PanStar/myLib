@@ -1,0 +1,150 @@
+﻿html {
+	font-size: 62.5%;/*10 ÷ 16 × 100% = 62.5%*/ 
+}
+
+body {
+	margin:0;
+	padding:0;
+	font-size: 1.6rem;
+	font-family: "Jaldi", sans-serif;
+	color: #fff;
+	background-color: #fff;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+html,
+body,
+.st-content {
+	height: 100%;
+}
+
+.st-container{
+	min-height:100%;
+}
+
+div{ margin:0; padding:0;}
+a {
+	color: #a0f6aa;
+	text-decoration: none;
+}
+
+h1 {
+	text-align: center;
+	width: 90%;
+	margin: 2em auto 0;
+	font-size: 2.4rem;
+	color: #507b55;
+	font-weight: bold;
+}
+@media only screen and (min-width: 600px) {
+	h1 {
+		font-size: 3.2rem;
+	}
+}
+input {
+	font-family: "Jaldi", sans-serif;
+	font-size: 1.6rem;
+}
+/*li 隐藏小圆点 */
+li {list-style-type:none;}
+
+.div_body{
+	position:relative;
+	width: 100%;
+	height: 100%;
+}
+/* 侧边栏 */
+.st-container{
+	position: relative;
+	float: left;
+	width: 20%;
+	background: #35383d;
+}
+.index{
+	padding: 0.5rem;
+}
+.node{
+	font-size:1.8rem;
+	padding: 0.2rem 0rem 0.2rem 0.5rem;
+	border-top: 0.1rem solid #4d5158;
+	cursor: pointer;
+}
+.node-title:hover{
+	cursor: pointer;
+	background: #4d5158;
+}
+.node-title label{
+	cursor: pointer;
+}
+.node-title input[type=checkbox] {
+	/* hide native checkbox */
+	position: absolute;
+	opacity: 0;
+}
+/* 侧边栏切换效果*/
+/* Effect 2: Reveal */
+.st-effect-2.st-menu-open .st-pusher {
+	-webkit-transform: translate3d(300px, 0, 0);
+	transform: translate3d(300px, 0, 0);
+}
+.st-effect-2.st-menu {
+	z-index: 1;
+}
+.st-effect-2.st-menu-open .st-effect-2.st-menu {
+	visibility: visible;
+	-webkit-transition: -webkit-transform 0.5s;
+	transition: transform 0.5s;
+}
+.st-effect-2.st-menu::after {
+	display: none;
+}
+/* 内容 */
+.st-content {
+	width: 80%;
+	float: right;
+	background: #DADADA;
+}
+.content{
+	height: 100%;
+	width: 100%;
+	border: 0;
+}
+/* ---- Main Components ----- */
+.cd-accordion-menu {
+	background: #35383d;
+	/*margin: 4em auto;*/
+	box-shadow: 0 4px 40px #70ac76;
+}
+/*默认隐藏 */
+.cd-accordion-menu ul {
+	display: none;
+}
+/*禁用选中 */
+.cd-accordion-menu li {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.cd-accordion-menu input[type=checkbox] {
+	/* hide native checkbox */
+	position: absolute;
+	opacity: 0;
+}
+.cd-accordion-menu label, .cd-accordion-menu a {
+	display: block;
+	padding: 1rem;
+	background: #4d5158;
+	border: 1px solid #4D5158;
+	color: #ffffff;
+	font-size: 1.6rem;
+}
+
+.cd-accordion-menu label {
+	cursor: pointer;
+}
+
+/* template */
+#template {width:260px;border:solid 1px #666;background-color:#eee;color:#333}
+#template tr{line-height:23px}
+#template tr th{background-color:#ccc;color:#fff}

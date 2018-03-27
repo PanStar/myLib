@@ -1,0 +1,645 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>MapABC_自定义弹出框</title>
+<style type="text/css">
+html{height:100%}
+body{height:100%;margin:0;padding:0;font-size:15px;}
+.display_none{display:none;}
+.transparent_start{position: absolute;left: 0px;top: -5px;width: 18px;height: 20px;}
+.transparent_end{position: absolute;left: 366px;top: -5px;width: 18px;height: 20px;}
+.info_line{
+	width:100%;
+	height:2px;
+	top: 30px;
+	position: absolute;
+	background-color: rgba(255, 255,255,0.5);
+}
+.info_title{position: absolute;top: 0px;left: 0px;padding: 0px;color: #FFFFFF;}
+.info_title li{
+	float: left;
+	width: 25%;
+	height:20px;
+	text-align: center;
+	padding: 5px 0;
+	position: relative;
+	list-style: none;/*隐藏小圆点*/
+	cursor:pointer;
+}
+.info_title li:hover{
+	font-size: 16px;
+}
+.info_title_active{
+	border-bottom: 2px solid blue;
+}
+.info_grid{width:100%;position: absolute;top: 32px;left: 0px;}
+#ywzlzb2{
+	position: absolute;
+	background-color:rgba(45, 45, 45, 0.5);
+	border-radius:6px;
+	-moz-box-shadow:1px 1px 2px hsla(0, 0%, 0%, 0.3);
+	-webkit-box-shadow:1px 1px 2px hsla(0, 0%, 0%, 0.3);
+	box-shadow:1px 1px 2px hsla(0, 0%, 0%, 0.3);
+}
+#ywzlzb2:before {
+	content:"";
+	position:absolute;
+	bottom:-25px; /* value = - border-top-width - border-bottom-width */
+	left:20px; /* controls horizontal position */
+	border-width:50px 20px 0;
+	border-style:solid;
+	border-color:rgba(145, 145, 145, 0.5) transparent;
+	/* reduce the damage in FF3.0 */
+	display:block; 
+	width:0;
+	transform:rotate(-14deg);
+	-ms-transform:rotate(-14deg); 	/* IE 9 */
+	-moz-transform:rotate(-14deg); 	/* Firefox */
+	-webkit-transform:rotate(54deg); /* Safari 和 Chrome */
+	-o-transform:rotate(-14deg); 	/* Opera */
+}
+#ywzlzb2:hover{
+	top:-2px;
+	left:-2px;
+	-moz-box-shadow:3px 3px 2px hsla(0, 0%, 0%, 0.3);
+	-webkit-box-shadow:3px 3px 2px hsla(0, 0%, 0%, 0.3);
+	box-shadow:3px 3px 2x hsla(0, 0%, 0%, 0.3);
+}
+/*
+	#ywzlzb2:after {
+	content:"";
+	position:absolute;
+	bottom:-18px; 
+	left:12px;
+	border-width:20px 8px 0;
+	border-style:solid;
+	border-color:rgba(45, 45, 45,0);
+	display:block; 
+	width:0;
+}
+*/
+
+</style>
+<script language="javascript" src="http://app.mapabc.com/apis?t=javascriptmap&v=3&key=b0a7db0b3a30f944a21c3682064dc70ef5b738b062f6479a5eca39725798b1ee300bd8d5de3a4ae3"></script>
+<script language="javascript" type="text/javascript" src="../Js/jquery/jquery-2.1.4.min.js"></script>
+<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script type="text/javascript">
+var mapObj;
+var myChart;
+function mapInit(){
+	mapObj = new MMap.Map("iCenter");
+	addOverlayAndTileLayer();
+	//addEcharts();
+	//zoomchange dragend mapmove
+	mapObj.bind(mapObj, "zoomchange", function(e) {
+		//addEcharts();
+	});
+	mapObj.bind(mapObj, "dragend", function(e) {
+		//addEcharts();
+		//setTimeout("addEcharts()",1000);
+	});
+}
+function InfoWindow(height,content){ 
+	var m = []; 
+	m.push('<div style="height:'+height+';width:auto;position:relative;z-index:104;overflow:hidden;">'); 
+	m.push(content); 
+	m.push('</div>'); 
+	return m.join(""); 
+}
+//添加实时交通图层和覆盖物
+function addOverlayAndTileLayer(){
+	var tmc_layer =new MMap.TileLayer.Tmc({
+	id:"tmc",//图层ID
+	zIndex:2,//图层叠加顺序值
+	refresh:20000//图层刷新频率
+	});
+	//mapObj.addLayer(tmc_layer);//加载实时交通切片图层
+	//添加点
+	var marker=new MMap.Marker({
+		icon:"http://code.mapabc.com/images/lan_1.png",
+		position:new MMap.LngLat(116.40546798706054,39.90776109736608)
+	});
+	mapObj.addOverlays(marker);
+	//添加线
+	var arr=new Array();//经纬度坐标数组 
+		arr.push(new MMap.LngLat(118.53244,31.71671));
+		arr.push(new MMap.LngLat(118.53181,31.65526));
+		arr.push(new MMap.LngLat(118.52122,31.563463));
+		arr.push(new MMap.LngLat(118.49375,31.51102));
+		arr.push(new MMap.LngLat(118.491476,31.504661));
+		arr.push(new MMap.LngLat(118.479198,31.49082));
+		arr.push(new MMap.LngLat(118.47053,31.47964));
+		arr.push(new MMap.LngLat(118.44842,31.46052));
+		arr.push(new MMap.LngLat(118.39274,31.38515));
+
+		/*
+		arr.push(new MMap.LngLat(118.4958,31.7081));
+		arr.push(new MMap.LngLat(118.386772,31.34856));
+		arr.push(new MMap.LngLat(117.812777,30.945));
+		arr.push(new MMap.LngLat(117.821111,30.932777));
+		arr.push(new MMap.LngLat(117.65096,30.65276));
+		arr.push(new MMap.LngLat(117.516991,30.621885));
+		arr.push(new MMap.LngLat(117.05985,30.55091));*/
+	var polyline=new MMap.Polyline({ 
+		id:"polyline01", 
+		path:arr, 
+		strokeColor:"#F00", 
+		strokeOpacity:0.4, 
+		strokeWeight:20,//宽度 
+		strokeStyle:"solid"//solid 实线 dashed 虚线 
+		//strokeDasharray:[10,5] 
+	}); 
+	mapObj.addOverlays(polyline);
+	mapObj.bind(polyline, "click", function(e) {
+		//console.log('on  Clicked!'); 
+		//console.log(polyline);
+		var polylineopt={}; 
+		polylineopt.strokeWeight = polyline.strokeWeight+1; 
+		polyline.setOptions(polylineopt);
+	});
+	mapObj.bind(polyline, "mouseover", function(e) {
+		var polylineopt={}; 
+		polylineopt.strokeColor='#0FF'; 
+		polyline.setOptions(polylineopt);
+	});
+	mapObj.bind(polyline, "mouseout", function(e) {
+		var polylineopt={}; 
+		polylineopt.strokeColor='#F00'; 
+		polyline.setOptions(polylineopt);
+	});
+	//添加多边形
+	var arr1=new Array();//经纬度坐标数组 
+		arr1.push(new MMap.LngLat("116.40332221984863","39.92025505675715")); 
+		arr1.push(new MMap.LngLat("116.41070365905762","39.89755531478615")); 
+		arr1.push(new MMap.LngLat("116.40229225158691","39.892353073034826")); 
+		arr1.push(new MMap.LngLat("116.38984680175781","39.89136526100842")); 
+	var polygon=new MMap.Polygon({ 
+		id:"polygon01", 
+		path:arr1, 
+		editable:false, 
+		strokeColor:"#0000ff", 
+		strokeOpacity:0.2, 
+		strokeWeight:3, 
+		fillColor: "#f5deb3", 
+		fillOpacity: 0.35 
+	}); 
+	mapObj.addOverlays(polygon);
+	mapObj.setFitView([marker,polyline,polygon]);
+	
+	
+	var marker = new MMap.Marker({
+		id:"marker"+1,
+		position:new MMap.LngLat(116.41546798706054,39.90776109736608),//位置 
+		offset:new MMap.Pixel(0,-80), //基点为图片左上角，设置相对基点的图片位置偏移量，向左向下为负 
+		draggable:false//不可拖动  
+	});
+	var inforWindow = new MMap.InfoWindow({ 
+		fillColor: "#f5deb3", 
+		fillOpacity: 0.35,
+		content:InfoWindow("150px",
+				 '<div style="overflow-y:auto;width:100%;height:150px;">'+
+				 '<table class="userStat_table" cellpadding="0" cellspacing="0" border="0" width="100%" height:150px; style="z-index:206;">'+
+							'<caption>测试点</caption>' +
+							'<tr>'+
+								'<td style="width:130px;">'+
+									'<span>整体流量(MB)：</span>'+
+								'</td>'+
+								'<td>'+
+									'<span>5233</span>'+
+								'</td>'+
+							'</tr>'+
+							'<tr>'+
+								'<td style="width:130px;">'+
+									'<span>网页浏览流量(MB)：</span>'+
+								'</td>'+
+								'<td>'+
+									'<span>4212</span>'+
+								'</td>'+
+							'</tr>'+
+							'<tr>'+
+								'<td style="width:130px;">'+
+									'<span>视频流量(MB)：</span>'+
+								'</td>'+
+								'<td>'+
+									'<span>4232</span>'+
+								'</td>'+
+							'</tr>'+
+							'<tr>'+
+								'<td style="width:130px;">'+
+									'<span>即时通信流量(MB)：</span>'+
+								'</td>'+
+								'<td>'+
+									'<span>1243</span>'+
+								'</td>'+
+							'</tr>'+
+						'</table>'+
+				'</div>'
+		), 
+		size:new MMap.Size(350,0), 
+		offset:new MMap.Pixel(-120,-126) 
+	}); 
+	mapObj.bind(marker,"mouseover",function(e){ 
+		inforWindow.open(mapObj,marker.getPosition());  
+	});
+	mapObj.bind(marker,"mouseout",function(e){ 
+		inforWindow.close(); 
+	});
+	mapObj.bind(marker,"click",function(e){
+		/*  inforWindow.open(mapObj,marker.getPosition());  */ 
+		mapObj.setCenter(new MMap.LngLat(116.41546798706054,39.90776109736608));
+	});
+	mapObj.addOverlays(marker);
+	
+	mark = new MMap.Marker({
+        id:"mark",//marker id 
+        position:new MMap.LngLat(116.41546798706054,39.90776109736608),//位置 
+        offset:new MMap.Pixel(-10,-300), //基点为图片左上角，设置相对基点的图片位置偏移量，向左向下为负 
+        draggable:false, //不可拖动  
+        content:'<div id="ywzlzb2" style="height:200px;width:400px;z-index:3;">'+
+		/*
+		'<div style="width:100%;top: 2px;position: absolute;z-index: 4;overflow: hidden;>'+
+					'<img class="img" src="src/transparent.gif">'+
+					'<img class="img" src="src/ywzlzb_line.png">'+
+		'</div>'+
+		*/
+		/*'<span class="info_title" >业务质量指标</span>'+*/
+		'<div class="info_title" style="width:100%;">'+
+			'<li style="width:33.3%;" >'+
+				'<span >用户数</span>'+
+			'</li>'+
+			'<li class="info_title_active" style="width:33.3%;" >'+
+				'<span >话务量</span>'+
+			'</li>'+
+			'<li style="width:33.3%;" >'+
+				'<span >流量</span>'+
+			'</li>'+
+		'</div>'+
+		'<div class="info_line"></div>'+
+		'<div class="info_grid">'+
+			'<div id="main" style="width:100%;height:170px;"></div>'+
+		'</div></div>'//自定义Marker内容，html字符串或DOM对象 
+	}); 
+	//mapObj.setZoom(18);
+	//addEcharts();
+	mapObj.bind(mark, "reload", function(e) {
+		addEcharts();
+		//setTimeout("addEcharts()",1000);
+	});
+	mapObj.addOverlays(mark);  
+	mapObj.setFitView([mark]);
+}
+
+function hideImg(Obj){
+	$(Obj.parentNode.parentNode).addClass('display_none');
+}
+function addEcharts(){
+		// 路径配置
+		require.config({
+			paths: {
+				//echarts: 'http://echarts.baidu.com/build/dist'
+				echarts:'dist'
+			}
+		});
+		
+		// 使用
+		require(
+			[
+				'echarts',
+				'echarts/theme/macarons',//theme
+				'echarts/chart/line',
+				'echarts/chart/bar'// 使用柱状图就加载bar模块，按需加载
+			],
+			function (ec,theme) {
+				// 基于准备好的dom，初始化echarts图表
+				if(!document.getElementById('main')){
+					return;
+				}
+				myChart = ec.init(document.getElementById('main'),theme); 
+	option = {
+		tooltip : {
+			trigger: 'axis'
+		},
+		legend: {
+			show:false,
+			data:['用户数']
+		},
+		splitLine:{show: false},//隐藏网格
+		toolbox: {
+			show : false,//隐藏工具条
+			feature : {
+				mark : {show: true},
+				dataView : {show: true, readOnly: false},
+				magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+				restore : {show: true},
+				saveAsImage : {show: true}
+			}
+		},
+		calculable : true,
+		xAxis : [
+			{
+				type : 'category',
+				boundaryGap : false,
+				data : ['周一','周二','周三','周四','周五','周六','周日']
+			}
+		],
+		yAxis : [
+			{
+				type : 'value'
+			}
+		],
+		series : [
+			{
+				name:'用户数',
+				type:'line',
+				stack: '总量',
+				data:[120, 132, 101, 134, 90, 230, 210]
+			},
+		]
+	};
+	
+	option2 = {
+    title: {
+        x: 'center',
+        text: 'ECharts例子个数统计',
+        subtext: 'Rainbow bar example',
+        link: 'http://echarts.baidu.com/doc/example.html'
+    },
+    tooltip: {
+        trigger: 'item'
+    },
+    toolbox: {
+        show: false,
+        feature: {
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            saveAsImage: {show: true}
+        }
+    },
+    calculable: true,
+    grid: {
+        borderWidth: 0,
+        y: 80,
+        y2: 60
+    },
+    xAxis: [
+        {
+            type: 'category',
+            show: false,
+            data: ['Line', 'Bar', 'Scatter', 'K', 'Pie', 'Radar', 'Chord', 'Force', 'Map', 'Gauge', 'Funnel']
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            show: false
+        }
+    ],
+    series: [
+        {
+            name: 'ECharts例子个数统计',
+            type: 'bar',
+            itemStyle: {
+                normal: {
+                    color: function(params) {
+                        // build a color map as your need.
+                        var colorList = [
+                          '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+                           '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+                           '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+                        ];
+                        return '#F4E001';//colorList[params.dataIndex]
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '{b}\n{c}'
+                    }
+                }
+            },
+            data: [12,21,10,4,12,5,6,5,25,23,7],
+            markPoint: {
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(0,0,0,0)',
+                    formatter: function(params){
+                        return '<img src="' 
+                                + params.data.symbol.replace('image://', '')
+                                + '"/>';
+                    }
+                },
+                data: [
+                    {xAxis:0, y: 350, name:'Line', symbolSize:20, symbol: 'image://../asset/ico/折线图.png'},
+                    {xAxis:1, y: 350, name:'Bar', symbolSize:20, symbol: 'image://../asset/ico/柱状图.png'},
+                    {xAxis:2, y: 350, name:'Scatter', symbolSize:20, symbol: 'image://../asset/ico/散点图.png'},
+                    {xAxis:3, y: 350, name:'K', symbolSize:20, symbol: 'image://../asset/ico/K线图.png'},
+                    {xAxis:4, y: 350, name:'Pie', symbolSize:20, symbol: 'image://../asset/ico/饼状图.png'},
+                    {xAxis:5, y: 350, name:'Radar', symbolSize:20, symbol: 'image://../asset/ico/雷达图.png'},
+                    {xAxis:6, y: 350, name:'Chord', symbolSize:20, symbol: 'image://../asset/ico/和弦图.png'},
+                    {xAxis:7, y: 350, name:'Force', symbolSize:20, symbol: 'image://../asset/ico/力导向图.png'},
+                    {xAxis:8, y: 350, name:'Map', symbolSize:20, symbol: 'image://../asset/ico/地图.png'},
+                    {xAxis:9, y: 350, name:'Gauge', symbolSize:20, symbol: 'image://../asset/ico/仪表盘.png'},
+                    {xAxis:10, y: 350, name:'Funnel', symbolSize:20, symbol: 'image://../asset/ico/漏斗图.png'},
+                ]
+            }
+        }
+    ]
+};
+option3 = {
+	tooltip : {
+				trigger : 'item'
+			},
+	grid : {
+		x : '5%',
+		y : '5%',
+		x2 : '5%',
+		y2 : '30px',
+		borderWidth : 0
+	},
+	xAxis : [ {
+		axisLine : {
+			lineStyle : {
+			color : '#FFF',
+			width: 1
+			}
+		},
+		axisLabel : {
+			textStyle : {
+			color : '#FFF'
+			}
+		},
+		axisTick : {
+			show : false
+		},
+		splitLine : {
+			show : false
+		},
+		splitArea : {
+			show : false
+		},
+		type : 'category',
+			data : [ 12.23,12.24,12.25,12.26,12.27 ]
+		} ],
+	yAxis : [ {
+		min : 0,
+		max : 700,
+		splitNumber : 0,
+		axisLine : {
+			lineStyle : {
+			color : '#FFF',
+			width: 1
+			}
+		},
+		splitLine : {
+			show : false
+		},
+		splitArea : {
+			show : false
+		},
+		type : 'value'
+		} ],
+		series : [
+			{
+				name : '平均温度',
+				type : 'line',
+				data : [ 632.56,543.87,435.76,376.85,564.99 ]
+		} ]
+};
+//柱状-折线
+
+option4 = {
+	tooltip : {
+		trigger: 'item'
+	},
+	title : {
+		text : '热门终端',
+		textStyle : {
+			color : '#FFF'
+		}
+	},
+	grid : {
+		borderWidth : 0
+	},
+	calculable : false,
+	legend: {
+		data:['流量','用户数']
+	},
+	xAxis : [ {
+		axisLine : {
+			lineStyle : {
+				color : '#FFF'
+			}
+		},
+		axisLabel : {
+			textStyle : {
+				color : '#FFF'
+			}
+		},
+		axisTick : {
+			show : false
+		},
+		splitLine : {
+			show:false
+		},
+		splitArea : {
+			show: false
+		},
+		type : 'category',
+		data : ['华为','小米','苹果','三星','魅族']
+		}
+	],
+	yAxis : [ {   
+			min: 0,
+			max: 150,
+			splitNumber: 0,
+			axisLine : {
+			lineStyle : {
+				color : '#FFF'
+			}
+			},
+			splitLine : {
+				show:false
+			},
+			splitArea : {
+				show: false
+			},
+			type : 'value',
+			name : '流量(GB)'
+		},
+		{   
+			min: 0,
+			max: 150,
+			splitNumber: 0,
+			axisLine : {
+			lineStyle : {
+				color : '#FFF'
+			}
+			},
+			type : 'value',
+			name : '用户数(万)',
+			axisLabel : {
+				formatter: '{value} °C'
+			}
+		}
+	],
+	series : [
+		{
+			name:'流量',
+			type:'bar',
+			data:[100,120,80,50,70]
+		},
+		{
+			name:'用户数',
+			type:'line',
+			yAxisIndex: 1,
+			data:[115,130,100,60,80]
+		}
+	]
+};
+				// 为echarts对象加载数据 
+				myChart.setOption(option4);
+				//myChart.setTheme(theme);
+				//addOverlayAndTileLayer(); 
+			}
+		);
+}
+</script>
+</head>
+<body onload="mapInit();">
+<table width='100%'  border="0" cellpadding="0" cellspacing="2" height='100%'>
+	<tr>
+		<td style="width:77%;height:100%; position: relative;">
+			<div id="iCenter" style="height:100%; width:100%;z-index:2"></div>
+			<div id="ywzlzb" style="right: 30px;top: 30px;position: absolute;z-index:3;display:none">
+				<div>
+					<img class="img" src="src/ywzlzb.png">
+				</div>
+				<div style="top: 10px;left: 10px;position: absolute;z-index: 4;">
+					<span style="color: #FFFFFF;">业务质量指标</span>
+				</div>
+				<div style="top: 2px;position: absolute;z-index: 4;>
+					<img class="img" src="src/transparent.gif">
+					<img class="img" src="src/transparent.gif">
+					<img class="img" src="src/ywzlzb_line.png">
+				</div>
+				<div style="right: 10px;top: 10px;position: absolute;z-index: 4;">
+					<img class="img" src="src/close_n.png" onclick="hideImg(this)">
+				</div>
+			</div>
+			<!--div id="ywzlzb2" style="height:100px;width:300px;left: 30px;top: 30px;">
+			</div-->
+			<!--div id="main" style="height:180px;display:none"></div-->
+		</td>
+		<!--
+		<td style="width:23%;border-left:1px solid #666;" valign="top" >
+			<div style="padding:5px 0px 0px 5px;font-size:12px;height:500px">
+				<b>清除地图方法即清除地图上所有的覆盖物类及图层</b><br/><br/>
+				<input type="button" onclick="addOverlayAndTileLayer();" value="添加覆盖物" />
+				<input type="button" onclick="mapObj.clearMap();" value="清除地图" />
+			</div>
+		</td>-->
+	</tr>
+</table>
+</body>
+</html>

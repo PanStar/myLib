@@ -1,0 +1,40 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+	<TITLE> 使用JQuery实现隔行变色 </TITLE>
+	<style type="text/css">
+		body{font-size:12px;text-align:center}
+		#tbStu{width:260px;border:solid 1px #666;background-color:#eee}
+		#tbStu tr{line-height:23px}
+		#tbStu tr th{background-color:#ccc;color:#fff}
+		#tbStu .trOdd{background-color:#fff}
+	</style>
+	<script language="javascript" type="text/javascript" src="Js/jquery/jquery-2.1.4.min.js"></script>
+	</HEAD>
+	<BODY>
+		<table id="tbStu" border="1" cellpadding="0" cellspacing="0">
+			<tbody>
+				<tr>
+					<th colspan="3">XX小区</th>
+				</tr>
+				<tr>
+					<td colspan="2">时间</td>
+					<td>2016-06-15</td>
+				</tr>
+				<tr>
+					<td rowspan="2">指标</td>
+					<td>掉话率</td>
+				<td>5%</td>
+				</tr>
+				<tr>
+					<td>接通率</td>
+					<td>90%</td>
+				</tr>
+				<tr>
+					<td colspan="2">问题定界</td>
+					<td>弱覆盖</td>
+				</tr>
+			</tbody>
+		</table>
+	</BODY>
+</HTML>

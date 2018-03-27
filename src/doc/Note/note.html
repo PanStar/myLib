@@ -1,0 +1,30 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>content</title>
+<style type="text/css">
+	html{height:100%}
+	body{height:100%;margin:0;padding:0;font-size:15px;}
+</style>
+</head>
+<body>
+<table width='100%'  border="0" cellpadding="0" cellspacing="2" height='100%' id="content">
+	<tr>
+		<td style="width:77%;height:100%;"><div id="iCenter" style="height:100%; width:100%"></div></td>
+		<td style="width:23%;border-left:1px solid #666;" valign="top" >
+			<div style="padding:5px 0px 0px 5px;font-size:12px;height:500px">
+				<b>拾取坐标</b><br/><br/>
+				<input type="button" onclick="pickupStart();" value="开始拾取" />
+				<input type="button" onclick="pickupEnd();" value="结束拾取" />
+				<input type="button" onclick="pickupCancel();" value="撤销" />
+				<textarea id="text" rows="20" cols="30"></textarea>
+				<input type="text" id="localvalue" value="请输入经纬度进行搜索" onfocus="if(value=='请输入经纬度进行搜索'){value='';}" onblur="if(value==''){value='请输入经纬度进行搜索';}" style="color: rgb(140, 140, 140);">
+				<input type="button" onclick="toLocation();" value="定位" />
+			</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

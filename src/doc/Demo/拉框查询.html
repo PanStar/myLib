@@ -1,0 +1,150 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>拉框查询</title>
+<style type="text/css">
+	html{height:100%}
+	body{height:100%;margin:0;padding:0;font-size:15px;}
+</style>
+<script language="javascript" src="http://app.mapabc.com/apis?t=javascriptmap&v=3&key=b0a7db0b3a30f944a21c3682064dc70ef5b738b062f6479a5eca39725798b1ee300bd8d5de3a4ae3"></script>
+<script type="text/javascript">
+var mapObj,mouse;
+function mapInit(){
+	mapObj = new MMap.Map("iCenter");
+}
+//加载鼠标工具，用于鼠标在地图的拉框绘制
+function mouseTool(){
+	mapObj.plugin(['MMap.MouseTool'],function(){
+		mouse=new MMap.MouseTool(mapObj);
+		mouse.polygon();//打开鼠标绘多边形模式
+		mapObj.bind(mouse,'draw',function(e){
+			var polygon=mapObj.getOverlaysByType("polygon")
+			if(polygon.length>1){
+				mapObj.clearOverlaysByType('polygon');
+				mapObj.addOverlays(e);
+			}
+		})
+	});
+}
+//拉框查询
+function regionSearch(){
+	mouse.close();//关闭鼠标工具
+	var keywords = document.getElementById("keyword").value;//传入参数
+	//构造拉框查询实例
+	var PoiSearchOption = {
+		srctype:"POI",//数据来源
+		type:"",//数据类别
+		number:10,//每页数量,默认10
+		batch:1,//请求页数，默认1
+		range:3000,	//查询范围，默认3000米
+		ext:""//扩展字段
+		};
+	var poiSearch = new MMap.PoiSearch(PoiSearchOption);
+		var polygons = mapObj.getOverlaysByType("polygon");
+		//var polygon1 = polygons[0];
+		var polygonarr = polygons[0].getPath();
+		poiSearch.byRegion(polygonarr,keywords,poiSearch_CallBack);
+}
+//关键字查询返回结果显示
+var markers = new Array(),markerLngLat = new Array(),infos = new Array();
+function poiSearch_CallBack(data){
+	mapObj.clearOverlaysByType('marker');
+	mapObj.clearInfoWindow();
+	if(data.status=='E0'){
+		var resultStr = "";markers=[];infos=[];markerLngLat=[];
+		for(var i = 0;i < data.list.length;i++){
+			addMarkerAndTip(i,data.list[i]);
+			resultStr += "<div id='divid" + (i + 1) + "' onmouseover='openMarkerTipById(" + i + ",this)' onmouseout='onmouseout_MarkerStyle(" + i + ",this)' onclick='onclickMarker(" + i + ",this)' style=\"font-size: 12px;cursor:pointer;padding:0px 0 4px 2px; border-bottom:1px solid #C1FFC1;\"><table><tr><td><img src=\"http://code.mapabc.com/images/apin/lan_" + (i + 1) + ".png\"></td>" + "<td><h3><font color=\"#0066CC\">名称: " + data.list[i].name + "</font></h3>";
+            resultStr += TipContents(data.list[i].type, data.list[i].address, data.list[i].tel) + "</td></tr></table></div>";	
+		}
+		mapObj.setFitView();
+	}else if(data.status =="E1"){
+         resultStr = "未查找到任何结果!<br />建议：<br />1.请确保所有字词拼写正确。<br />2.尝试不同的关键字。<br />3.尝试更宽泛的关键字。";	
+	}else{
+		 resultStr= "错误信息："+data.status+"请对照API Server v2.0.0 简明提示码对照表查找错误类型";
+	}
+	document.getElementById("result").innerHTML = resultStr;
+}
+//定义标注点和信息窗口
+function addMarkerAndTip(i,d){
+	//定义标注点
+	var marker = new MMap.Marker({
+		id:(i+1),
+		position:new MMap.LngLat(d.x,d.y),
+		offset:new MMap.Pixel(-10,-34),
+		icon:"http://code.mapabc.com/images/apin/lan_" + (i + 1) + ".png",
+		draggable:false
+	});
+	markers.push(marker);
+	markerLngLat.push(new MMap.LngLat(d.x,d.y));
+	mapObj.addOverlays(marker);
+	//定义信息窗口
+	var infoWindow = new MMap.InfoWindow({
+		autoMove:true,
+		content:'<div style="color:#0066CC;font-family:Microsoft YaHei;font-size:80%;word-break: break-all"><b>'+d.name+'</b><hr/>'+TipContents(d.type,d.address,d.tel)+'</div>',
+		size:new MMap.Size(240, 0),
+		offset:new MMap.Pixel(-70,-96)				
+	});
+	infos.push(infoWindow);
+	//绑定 marker 点击事件，点击后打开 Tip
+	mapObj.bind(marker,'click',function(e){
+		infoWindow.open(mapObj, marker.getPosition());	
+	});
+}
+//Tip中的内容设置
+function TipContents(type,address,tel){
+	if (type == "" || type == "undefined" || type == null || type == " undefined" || typeof type == "undefined") {
+		type = "暂无";
+	}
+	if (address == "" || address == "undefined" || address == null || address == " undefined" || typeof address == "undefined") {
+		address = "暂无";
+	}
+	if (tel == "" || tel == "undefined" || tel == null || tel == " undefined" || typeof address == "tel") {
+		tel = "暂无";
+	}
+	var str ="地址：" + address + "<br/>电话：" + tel + " <br/>类型："+type;
+	return str;
+}
+//鼠标移动到结果列表某项时的变化
+function openMarkerTipById(i, thiss) {
+    thiss.style.background = '#CAE1FF';
+	markers[i].icon="http://code.mapabc.com/images/apin/hong_" + (i + 1) + ".png";
+	mapObj.updateOverlay(markers[i]);
+}
+//鼠标离开结果列表的某项时恢复原状
+function onmouseout_MarkerStyle(i, thiss) {
+    thiss.style.background = "";
+	markers[i].icon="http://code.mapabc.com/images/apin/lan_" + (i + 1) + ".png";
+	mapObj.updateOverlay(markers[i]);
+}
+//鼠标点击结果列表的某项时打开marker的Tip
+function onclickMarker(i,thiss) {
+	thiss.style.background = '#CAE1FF';
+	markers[i].icon="http://code.mapabc.com/images/apin/hong_" + (i + 1) + ".png";
+    infos[i].open(mapObj, markerLngLat[i]);
+}
+</script>
+</head>
+<body onload="mapInit();">
+<table width='100%'  border="0" cellpadding="0" cellspacing="2" height='100%'>
+	<tr>
+		<td style="width:77%;height:100%;"><div id="iCenter" style="height:100%; width:100%"></div></td>
+		<td style="width:22%;border-left:1px solid #666;" valign="top" >
+			<div style="padding:5px 0px 0px 5px;font-size:12px;height:500px">
+				<b>拉框查询</b><br/><br/>
+				<div>
+					先绘制需要查询的多边形区域：<input type="button" value="点我" onclick="mouseTool()"/><br/>
+					关键字：<input type="text" id="keyword" name="keyword" value="酒店"/>
+					<input type="button" value="查询" onclick="regionSearch()"/><br/>
+					<hr size="1" noshade="noshade" style="border:1px #cccccc dotted;"/>
+				</div>
+				<div id="result_title"><b>拉框查询结果：</b></div>
+				<div id="result" name="result" style="height:520px;overflow:auto;width:327px;margin-top:5px"></div>
+  			</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

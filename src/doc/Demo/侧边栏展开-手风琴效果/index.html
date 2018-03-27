@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<HTML>
+	<HEAD>
+	<TITLE> Index </TITLE>
+	<meta charset="utf-8" />
+	<link type="text/css" href="index.css" rel="stylesheet">
+	<script language="javascript" type="text/javascript" src="../Js/jquery/jquery-2.1.4.min.js">
+	</script>
+	<script type="text/javascript">
+	jQuery(document).ready(function(){
+		createIndex();
+		var accordionsMenu = $('.cd-accordion-menu');
+		if( accordionsMenu.length > 0 ) {
+			accordionsMenu.each(function(){
+				var accordion = $(this);
+				//detect change in the input[type="checkbox"] value
+				accordion.on('change', 'input[type="checkbox"]', function(){
+					var checkbox = $(this);
+					//console.log(checkbox.prop('checked'));
+					( checkbox.prop('checked') ) ? checkbox.siblings('ul').attr('style', 'display:none;').slideDown(300) : checkbox.siblings('ul').attr('style', 'display:block;').slideUp(300);
+				});
+			});
+		}
+	});
+	function createIndex(){
+		var data = {'Note':{'eastcom':{'note':{'eastcom':{'note':'note'}}}},'Demo':{'q':'11'},'Blog(Marker)':{'muou':{'杭州到仙居 汽车票':'http://www.changtu.com/chepiao/hangzhoushi-xianjuxian.html?day=1&endId=A-690409'},'Coder':{'html字符串转义':'http://blog.csdn.net/wusuopubupt/article/details/8817826'},'API':{'jQuery 中文API':'http://www.jquery123.com/'}}};
+		//data = {'Note':{'eastcom':{'note':'note'}},'Demo2':{'q':'qq'}};
+		var html = getIndexHTML(data);
+		$('#index').html(html);
+	}
+	//Obj To HTML
+	function getIndexHTML(data,name,deep){
+		if(!name){name='root';}
+		if(!deep){deep=0};++deep;
+		var html='';
+		if(data.constructor == Object){
+			var id = name+'-'+deep;
+			html = '<li class="has-children">'+
+					'<input type="checkbox" name="'+id+'" id="'+id+'">'+
+					'<label for="'+id+'">'+name+'</label>'+
+					'<ul>';
+			for(obj in data){
+				html+=getIndexHTML(data[obj],obj,deep);
+			}
+			html+='</ul>';
+		}else{
+			//html = '<li><a href="javascript:window.open(\''+data+'\', \'_blank\');">'+name+'</a></li>';
+			html = '<li><a href="javascript:openWindow(\''+data+'\');">'+name+'</a></li>';
+		}
+		return html;
+	}
+	//Obj To List
+	function getObj(data){
+		var result=data;
+		var isLeaf=true;
+		if(data.constructor == Object){
+			isLeaf=false;
+			result = new Array();
+			for(obj in data){
+				result.push(getObj(data[obj]));
+			}
+		}
+		return {'list':result,'isLeaf':isLeaf};
+	}
+	function openWindow(url){
+		if(url.startsWith('http')){
+			window.open(url, '_blank');
+		}else{
+		}
+	}
+	</script>
+	</HEAD>
+	<BODY>
+<ul class="cd-accordion-menu animated" id="index">
+	<li class="has-children">
+		<input type="checkbox" name="group-1" id="group-1" checked="">
+		<label for="group-1">Group 1</label>
+
+		<ul style="display: none;">
+			<li class="has-children">
+				<input type="checkbox" name="sub-group-1" id="sub-group-1">
+				<label for="sub-group-1">Sub Group 1</label>
+
+				<ul>
+					<li><a href="#0">Image</a></li>
+					<li><a href="#0">Image</a></li>
+					<li><a href="#0">Image</a></li>
+				</ul>
+			</li>
+			<li class="has-children">
+				<input type="checkbox" name="sub-group-2" id="sub-group-2">
+				<label for="sub-group-2">Sub Group 2</label>
+
+				<ul>
+					<li class="has-children">
+						<input type="checkbox" name="sub-group-level-3" id="sub-group-level-3">
+						<label for="sub-group-level-3">Sub Group Level 3</label>
+
+						<ul>
+							<li><a href="#0">Image</a></li>
+							<li><a href="#0">Image</a></li>
+						</ul>
+					</li>
+					<li><a href="#0">Image</a></li>
+				</ul>
+			</li>
+			<li><a href="#0">Image</a></li>
+			<li><a href="#0">Image</a></li>
+		</ul>
+	</li>
+
+	<li class="has-children">
+		<input type="checkbox" name="group-2" id="group-2">
+		<label for="group-2">Group 2</label>
+
+		<ul style="display: none;">
+			<li><a href="#0">Image</a></li>
+			<li><a href="#0">Image</a></li>
+		</ul>
+	</li>
+
+	<li class="has-children">
+		<input type="checkbox" name="group-3" id="group-3">
+		<label for="group-3">Group 3</label>
+
+		<ul style="display: none;">
+			<li><a href="#0">Image</a></li>
+			<li><a href="#0">Image</a></li>
+		</ul>
+	</li>
+
+	<li class="has-children">
+		<input type="checkbox" name="group-4" id="group-4">
+		<label for="group-4">Group 4</label>
+
+		<ul>
+			<li class="has-children">
+				<input type="checkbox" name="sub-group-3" id="sub-group-3">
+				<label for="sub-group-3">Sub Group 3</label>
+
+				<ul>
+					<li><a href="#0">Image</a></li>
+					<li><a href="#0">Image</a></li>
+				</ul>
+			</li>
+			<li><a href="#0">Image</a></li>
+			<li><a href="#0">Image</a></li>
+		</ul>
+	</li>
+</ul>
+	</BODY>
+</HTML>
